@@ -28,7 +28,7 @@ http://praytimes.org/manual
 
 Calculation Formulas: 
 http://praytimes.org/calculation
-
+http://praytimes.org/wiki/Code_Manual
 
 
 //------------------------ User Interface -------------------------

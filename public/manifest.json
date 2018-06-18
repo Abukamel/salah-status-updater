@@ -27,6 +27,9 @@
       "191415554187-plf74df8l8m94qopnqpis6mt2uq3519k.apps.googleusercontent.com",
     "scopes": ["https://slack-oauth-middleware.herokuapp.com/oauth2"]
   },
+  "externally_connectable": {
+    "matches": ["*://localhost/*"]
+  },
   "permissions": [
     "identity",
     "storage",

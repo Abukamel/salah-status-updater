@@ -3,3 +3,4 @@ export const slackScope: string = "dnd:write,users.profile:write";
 export const slackAuthorizeURL: string = "https://slack.com/oauth/authorize";
 export const herokuRedirectURI: string =
   "https://slack-oauth-middleware.herokuapp.com/oauth2";
+export const extensionID: string = "angcnehdmhhhceijompnlichhojnkdco";

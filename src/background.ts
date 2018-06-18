@@ -3,14 +3,14 @@ import * as config from "./config";
 import { prayTimes } from "./PrayTimes";
 import * as storage from "./storage";
 
-export interface SlackCredentials {
+export interface SlackTeam {
   access_token: string | null;
   team_id: string | null;
   team_name: string | null;
 }
 
 setInterval(() => {
-  storage.get("slack_teams")
+  storage.get("slackTeams")
     ? chrome.browserAction.setBadgeText({ text: "" })
     : chrome.browserAction.setBadgeText({ text: "ADD" });
 }, 10 * 1000);
@@ -24,15 +24,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           config.slackClientID
         }&scope=${config.slackScope}&redirect_uri=${config.herokuRedirectURI}`
       },
-      (redirectURI: string) => {
+      async (redirectURI: string) => {
         const parsedURL = new URL(redirectURI);
         const slackCredentials = {
           access_token: parsedURL.searchParams.get("access_token"),
           team_id: parsedURL.searchParams.get("team_id"),
           team_name: parsedURL.searchParams.get("team_name")
         };
-        storage.put({ key: "slack_teams", value: slackCredentials }, true);
-        console.log(storage.get("slack_teams"));
+        await storage.put({ key: "slackTeams", value: slackCredentials }, true);
+        sendResponse({ added: true });
       }
     );
   }

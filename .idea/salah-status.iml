@@ -11,5 +11,6 @@
     <orderEntry type="library" name="@types/lodash" level="application" />
     <orderEntry type="library" name="@types/chrome" level="application" />
     <orderEntry type="library" name="@types/storejs" level="application" />
+    <orderEntry type="library" name="@types/material-ui" level="application" />
   </component>
 </module>
