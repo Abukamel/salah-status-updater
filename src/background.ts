@@ -1,6 +1,5 @@
 // tslint:disable:no-console
 import * as config from "./config";
-import { prayTimes } from "./PrayTimes";
 import * as storage from "./storage";
 
 export interface SlackTeam {
@@ -38,50 +37,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-const options = {
-  enableHighAccuracy: true,
-  maximumAge: 0,
-  timeout: 5000
-};
-
-function success(pos: any) {
-  const crd = pos.coords;
-  const timestamp = Math.round(new Date().getTime() / 1000);
-  fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?timestamp=${timestamp}&location=${
-      crd.latitude
-    },${crd.longitude}`
-  )
-    .then(response => {
-      response.json().then(data => {
-        const tz = {
-          dst: data.dstOffset,
-          format: "24h",
-          zone: String(data.rawOffset / 3600)
-        };
-        storage.put(
-          {
-            key: "pray_times",
-            value: prayTimes.getTimes(
-              new Date(),
-              [crd.latitude, crd.longitude],
-              tz.zone,
-              tz.dst,
-              tz.format
-            )
-          },
-          false
-        );
-      });
-    })
-    .catch(e => console.error(e));
-}
-
-function error(err: any) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
-}
-
-setInterval(
-  () => navigator.geolocation.getCurrentPosition(success, error, options),
-  60 * 1000
-);
+// setInterval(
+//   () => navigator.geolocation.getCurrentPosition(success, error, options),
+//   60 * 1000
+// );
