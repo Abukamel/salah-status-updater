@@ -1,5 +1,7 @@
 // tslint:disable:no-console
 import * as config from "./config";
+import * as location from "./location";
+import * as prayer from "./prayer";
 import * as storage from "./storage";
 
 export interface SlackTeam {
@@ -11,8 +13,25 @@ export interface SlackTeam {
 setInterval(() => {
   storage.get("slackTeams")
     ? chrome.browserAction.setBadgeText({ text: "" })
-    : chrome.browserAction.setBadgeText({ text: "ADD" });
+    : chrome.browserAction.setBadgeText({ text: "!!!" });
 }, 10 * 1000);
+
+chrome.runtime.onInstalled.addListener(async () => {
+  // Set current geographic location
+  const currentLocationInfo = await location.setOrUpdateCurrent();
+
+  // Set current prayer times
+  prayer.setOrUpdateTimes({
+    dayLightSaving: currentLocationInfo.dayLightSaving,
+    latitude: currentLocationInfo.latitude,
+    longitude: currentLocationInfo.longitude,
+    timeFormat: config.TIME_FORMAT,
+    timezoneOffset: currentLocationInfo.timezoneOffset
+  });
+
+  // Set default prayers idle time
+  storage.put({key: "prayersIdleTime", value: config.prayersIdleTime}, false)
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.add_slack_team) {

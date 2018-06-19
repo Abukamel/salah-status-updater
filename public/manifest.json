@@ -12,9 +12,9 @@
     "default_title": "Salah Status Updater"
   },
   "icons": {
-    "16": "logo-small.png",
-    "48": "logo-small.png",
-    "128": "logo-small.png"
+    "16": "prayer-16.png",
+    "48": "prayer-64.png",
+    "128": "prayer-128.png"
   },
   "background": {
     "scripts": ["static/js/background.js"],
@@ -35,7 +35,6 @@
     "storage",
     "background",
     "geolocation",
-    "https://*.islamicfinder.us/*",
     "https://slack.com/*",
     "https://slack-oauth-middleware.herokuapp.com/oauth2"
   ]

@@ -1,16 +1,17 @@
+import * as config from "./config";
 import { prayTimes } from "./PrayTimes";
 import * as storage from "./storage";
 
 interface LocationTimezoneInfo {
-  dayLightSaving: boolean;
-  latitude: string;
-  longitude: string;
-  timezoneOffset: string;
+  dayLightSaving: number;
+  latitude: number;
+  longitude: number;
+  timezoneOffset: number;
   timeFormat: string;
 }
 
-export function putOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
-  storage.put(
+export async function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
+  await storage.put(
     {
       key: "prayerTimes",
       value: prayTimes.getTimes(
@@ -18,7 +19,7 @@ export function putOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
         [locationTimezoneInfo.latitude, locationTimezoneInfo.longitude],
         locationTimezoneInfo.timezoneOffset,
         locationTimezoneInfo.dayLightSaving,
-        locationTimezoneInfo.timeFormat = "24h",
+        locationTimezoneInfo.timeFormat = config.TIME_FORMAT,
       )
     },
     false

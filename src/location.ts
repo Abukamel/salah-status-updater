@@ -1,42 +1,52 @@
+// @ts-ignore
+import * as log from "loglevel";
+import * as config from "./config";
 import * as storage from "./storage";
-
 const options = {
   enableHighAccuracy: true,
   maximumAge: 0,
   timeout: 5000
 };
 
-export function putOrUpdateCurrent() {
-  navigator.geolocation.getCurrentPosition(success, error, options);
+// interface LocationInfo {
+//   dayLightSaving: number;
+//   latitude: number;
+//   longitude: number;
+//   timezoneOffset: number;
+// }
+
+export async function setOrUpdateCurrent() {
+  await navigator.geolocation.getCurrentPosition(success, error, options);
+  const ret =  await storage.get("currentLocation");
+  return ret;
 }
 
 function success(pos: any) {
   const crd = pos.coords;
-  const timestamp = Math.round(new Date().getTime() / 1000);
   fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?timestamp=${timestamp}&location=${
-      crd.latitude
-    },${crd.longitude}`
+    `http://api.timezonedb.com/v2/get-time-zone?key=${
+      config.timeZoneDBAPIKey
+    }&by=position&lat=${crd.latitude}&lng=${crd.longitude}&format=json`
   )
     .then(response => {
-      response.json().then(data => {
-        storage.put(
+      response.json().then(async (data) => {
+        await storage.put(
           {
             key: "currentLocation",
             value: {
-              dayLightSaving: Boolean(data.dstOffset),
+              dayLightSaving: data.dst,
               latitude: crd.latitude,
               longitude: crd.longitude,
-              timezoneOffset: String(data.rawOffset / 3600),
+              timezoneOffset: data.abbreviation
             }
           },
           false
         );
       });
     })
-    .catch(e => console.error(e));
+    .catch(e => log.error(e));
 }
 
 function error(err: any) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
+  log.warn(`ERROR(${err.code}): ${err.message}`);
 }

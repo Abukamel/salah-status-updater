@@ -15,6 +15,7 @@ import * as storage from "./storage";
 import { Avatar, ListItemAvatar } from "@material-ui/core";
 import { Launch } from "@material-ui/icons";
 import CircleProgress from "./CircleProgress";
+import IdleTimeConfDialog from "./IdleTimeConfDialog";
 
 const styles = (theme: Theme) => ({
   root: theme.mixins.gutters({
@@ -95,6 +96,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div>
         <Paper className={classes.root} elevation={0}>
+          <IdleTimeConfDialog />
           <List
             component="nav"
             subheader={
@@ -144,6 +146,24 @@ class App extends React.Component<AppProps, AppState> {
           </Button>
           {this.state.connectInProgress ? <CircleProgress /> : null}
         </Paper>
+        <span>
+          Icons made by{" "}
+          <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">
+            Eucalyp
+          </a>{" "}
+          from{" "}
+          <a href="https://www.flaticon.com/" title="Flaticon">
+            www.flaticon.com
+          </a>{" "}
+          is licensed by{" "}
+          <a
+            href="http://creativecommons.org/licenses/by/3.0/"
+            title="Creative Commons BY 3.0"
+            target="_blank"
+          >
+            CC 3.0 BY
+          </a>
+        </span>
       </div>
     );
   }
