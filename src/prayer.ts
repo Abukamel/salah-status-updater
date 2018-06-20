@@ -1,3 +1,5 @@
+// @ts-ignore
+import * as log from "loglevel";
 import * as config from "./config";
 import { prayTimes } from "./PrayTimes";
 import * as storage from "./storage";
@@ -10,18 +12,23 @@ interface LocationTimezoneInfo {
   timeFormat: string;
 }
 
-export async function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
-  await storage.put(
-    {
-      key: "prayerTimes",
-      value: prayTimes.getTimes(
-        new Date(),
-        [locationTimezoneInfo.latitude, locationTimezoneInfo.longitude],
-        locationTimezoneInfo.timezoneOffset,
-        locationTimezoneInfo.dayLightSaving,
-        locationTimezoneInfo.timeFormat = config.TIME_FORMAT,
-      )
-    },
-    false
-  );
+export async function setOrUpdateTimes(
+  locationTimezoneInfo: LocationTimezoneInfo
+) {
+  storage
+    .put(
+      {
+        key: "prayerTimes",
+        value: await prayTimes.getTimes(
+          new Date(),
+          [locationTimezoneInfo.latitude, locationTimezoneInfo.longitude],
+          locationTimezoneInfo.timezoneOffset,
+          locationTimezoneInfo.dayLightSaving,
+          locationTimezoneInfo.timeFormat || config.TIME_FORMAT
+        )
+      },
+      false
+    )
+    .then(response => log.info(response))
+    .catch(e => log.error(e));
 }

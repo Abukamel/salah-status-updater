@@ -47,22 +47,7 @@ export default class FormDialog extends React.Component<
   public handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState(
       // @ts-ignore
-      { [event.currentTarget.id]: event.currentTarget.value },
-      () => {
-        storage.put(
-          {
-            key: "prayersIdleTime",
-            value: {
-              asr: Number(this.state.asr) > 60 ? 60 : Number(this.state.asr),
-              dhuhr: Number(this.state.dhuhr) > 60 ? 60 : Number(this.state.dhuhr),
-              fajr: Number(this.state.fajr) > 60 ? 60 : Number(this.state.fajr),
-              isha: Number(this.state.isha) > 60 ? 60 : Number(this.state.isha),
-              maghrib: Number(this.state.maghrib) > 60 ? 60 : Number(this.state.maghrib)
-            }
-          },
-          false
-        );
-      }
+      { [event.currentTarget.id]: event.currentTarget.value }
     );
   };
 
@@ -76,11 +61,36 @@ export default class FormDialog extends React.Component<
       {
         key: "prayersIdleTime",
         value: {
-          asr: Number(this.state.asr) > 60 ? 60 : Number(this.state.asr),
-          dhuhr: Number(this.state.dhuhr) > 60 ? 60 : Number(this.state.dhuhr),
-          fajr: Number(this.state.fajr) > 60 ? 60 : Number(this.state.fajr),
-          isha: Number(this.state.isha) > 60 ? 60 : Number(this.state.isha),
-          maghrib: Number(this.state.maghrib) > 60 ? 60 : Number(this.state.maghrib)
+          asr:
+            Number(this.state.asr) > 60
+              ? 60
+              : Number(this.state.asr)
+                ? Number(this.state.asr)
+                : 30,
+          dhuhr:
+            Number(this.state.dhuhr) > 60
+              ? 60
+              : Number(this.state.dhuhr)
+                ? Number(this.state.dhuhr)
+                : 30,
+          fajr:
+            Number(this.state.fajr) > 60
+              ? 60
+              : Number(this.state.fajr)
+                ? Number(this.state.fajr)
+                : 40,
+          isha:
+            Number(this.state.isha) > 60
+              ? 60
+              : Number(this.state.isha)
+                ? Number(this.state.isha)
+                : 30,
+          maghrib:
+            Number(this.state.maghrib) > 60
+              ? 60
+              : Number(this.state.maghrib)
+                ? Number(this.state.maghrib)
+                : 30
         }
       },
       false

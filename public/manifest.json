@@ -3,7 +3,7 @@
 
   "name": "Salah Status Updater",
   "description":
-    "Update user status on slack during after Muslim Azan until Salah ends",
+    "Update user status on slack to DND mode after Muslim Azan until prayer ends",
   "version": "0.0.1",
   "author": "Ahmed Kamel <k.tricky@gmail.com>",
   "homepage_url": "https://github.com/Abukamel/salah-status-updater",
@@ -36,6 +36,7 @@
     "background",
     "geolocation",
     "https://slack.com/*",
-    "https://slack-oauth-middleware.herokuapp.com/oauth2"
+    "https://slack-oauth-middleware.herokuapp.com/oauth2",
+    "http://api.timezonedb.com/*"
   ]
 }

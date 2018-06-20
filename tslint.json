@@ -2,7 +2,8 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "import-sources-order": "any",
   "rules": {
-    "interface-name": [true, "never-prefix"]
+    "interface-name": [true, "never-prefix"],
+    "no-debugger": false
   },
   "linterOptions": {
     "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/PrayTimes.js"]

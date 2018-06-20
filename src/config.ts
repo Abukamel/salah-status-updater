@@ -1,7 +1,8 @@
 export const timeZoneDBAPIKey: string = "8CF211EJWHQ2";
 export const slackClientID: string = "382835922887.381571407876";
-export const slackScope: string = "dnd:write,users.profile:write";
+export const slackScope: string = "dnd:write, users.profile:write";
 export const slackAuthorizeURL: string = "https://slack.com/oauth/authorize";
+export const tzDBAPIURL: string = "http://api.timezonedb.com/v2";
 export const herokuRedirectURI: string =
   "https://slack-oauth-middleware.herokuapp.com/oauth2";
 export const extensionID: string = "angcnehdmhhhceijompnlichhojnkdco";

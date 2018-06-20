@@ -7,6 +7,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Paper from "@material-ui/core/Paper";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
+// @ts-ignore
+import * as log from "loglevel";
 import * as React from "react";
 import { SlackTeam } from "./background";
 import { extensionID } from "./config";
@@ -63,8 +65,7 @@ class App extends React.Component<AppProps, AppState> {
           },
           response => {
             if (chrome.runtime.lastError) {
-              // tslint:disable-next-line:no-console
-              console.error(chrome.runtime.lastError.message);
+              log.error(chrome.runtime.lastError.message);
             } else {
               this.setState(prevState => {
                 return { connectInProgress: !prevState.connectInProgress };
@@ -147,7 +148,7 @@ class App extends React.Component<AppProps, AppState> {
           {this.state.connectInProgress ? <CircleProgress /> : null}
         </Paper>
         <span>
-          Icons made by{" "}
+          Icon made by{" "}
           <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">
             Eucalyp
           </a>{" "}
