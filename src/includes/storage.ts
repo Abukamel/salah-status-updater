@@ -8,17 +8,17 @@ interface StoreData {
   value: any;
 }
 
-export async function put(data: StoreData, combine: boolean) {
+export function put(data: StoreData, combine: boolean) {
   try {
-    const currentVersion = await store.get(data.key);
+    const currentVersion = store.get(data.key);
     if (currentVersion instanceof Array) {
       currentVersion.push(data.value);
       const newVersion = _.uniqWith(currentVersion, _.isEqual);
-      await store.set(data.key, newVersion);
+      store.set(data.key, newVersion);
     } else if (!currentVersion && combine) {
-      await store.set(data.key, [data.value]);
+      store.set(data.key, [data.value]);
     } else {
-      await store.set(data.key, data.value);
+      store.set(data.key, data.value);
     }
   } catch (e) {
     log.error(e);

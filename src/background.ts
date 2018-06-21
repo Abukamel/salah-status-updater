@@ -1,13 +1,11 @@
 import { omit } from "lodash";
-// @ts-ignore
-import * as log from "loglevel";
 import * as moment from "moment";
 import * as schedule from "node-schedule";
-import * as config from "./config";
-import * as location from "./location";
-import * as prayer from "./prayer";
-import * as slack from "./slack";
-import * as storage from "./storage";
+import * as config from "./includes/config";
+import * as location from "./includes/location";
+import * as prayer from "./includes/prayer";
+import * as slack from "./includes/slack";
+import * as storage from "./includes/storage";
 
 export interface SlackTeam {
   access_token: string | null;
@@ -52,20 +50,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.browserAction.setBadgeText({ text: "" });
 
         // Save Salah times into storage
-        prayer
-          .setOrUpdateTimes(await storage.get("currentLocation"))
-          .then(response => log.info(response))
-          .catch(e => log.error(e));
+        prayer.setOrUpdateTimes(await storage.get("currentLocation"));
 
         // Update current location and Salah times every hour
-        setInterval(async () => {
-          log.info(
-            `Updated location info: ${await location.setOrUpdateCurrent()}`
-          );
-          prayer
-            .setOrUpdateTimes(await storage.get("currentLocation"))
-            .then(response => log.info(`Prayer times updated: ${response}`))
-            .catch(e => log.error(e));
+        setInterval(() => {
+          prayer.setOrUpdateTimes(storage.get("currentLocation"));
         }, 3600 * 1000);
 
         const prayerTimes = omit(storage.get("prayerTimes"), [

@@ -5,6 +5,6 @@
     "interface-name": [true, "never-prefix"]
   },
   "linterOptions": {
-    "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/PrayTimes.js"]
+    "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/includes/PrayTimes.js"]
   }
 }

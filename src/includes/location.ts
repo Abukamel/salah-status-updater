@@ -1,5 +1,3 @@
-// @ts-ignore
-import * as log from "loglevel";
 import * as config from "./config";
 import * as storage from "./storage";
 
@@ -33,7 +31,7 @@ export function setOrUpdateCurrent(): LocationInfo | undefined {
       ret = await success(position);
     })
     .catch(e => {
-      log.error(e);
+      throw e;
     });
 
   // await navigator.geolocation.getCurrentPosition(success, error, options);
@@ -43,32 +41,32 @@ export function setOrUpdateCurrent(): LocationInfo | undefined {
 function success(pos: any): LocationInfo | undefined {
   const crd = pos.coords;
   let locationInfo: LocationInfo | undefined;
-  fetch(
-    `${config.tzDBAPIURL}/get-time-zone?key=${
-      config.timeZoneDBAPIKey
-    }&by=position&lat=${crd.latitude}&lng=${crd.longitude}&format=json`
-  )
-    .then(response => {
-      response.json().then(async data => {
-        locationInfo = {
-          dayLightSaving: Number(data.dst),
-          latitude: crd.latitude,
-          longitude: crd.longitude,
-          timezoneOffset: Number(data.abbreviation)
-        };
-        await storage.put(
-          {
-            key: "currentLocation",
-            value: locationInfo
-          },
-          false
-        );
+  (async () => {
+    await fetch(
+      `${config.tzDBAPIURL}/get-time-zone?key=${
+        config.timeZoneDBAPIKey
+      }&by=position&lat=${crd.latitude}&lng=${crd.longitude}&format=json`
+    )
+      .then(async response => {
+        await response.json().then(data => {
+          locationInfo = {
+            dayLightSaving: Number(data.dst),
+            latitude: crd.latitude,
+            longitude: crd.longitude,
+            timezoneOffset: Number(data.abbreviation)
+          };
+          storage.put(
+            {
+              key: "currentLocation",
+              value: locationInfo
+            },
+            false
+          );
+        });
+      })
+      .catch(e => {
+        throw e;
       });
-    })
-    .catch(e => log.error(e));
+  })();
   return locationInfo;
 }
-
-// function error(err: any) {
-//   log.warn(`ERROR(${err.code}): ${err.message}`);
-// }
