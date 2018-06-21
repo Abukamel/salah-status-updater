@@ -58,8 +58,11 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? "source-map" : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: { app: [require.resolve("./polyfills"), paths.appIndexJs],
-  background: [require.resolve("./polyfills"), "./src/background.ts"]},
+  entry: {
+    app: [require.resolve("./polyfills"), paths.appIndexJs],
+    background: [require.resolve("./polyfills"), "src/background.ts"],
+    options: [require.resolve("./polyfills"), "src/options.tsx"],
+  },
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -257,6 +260,23 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: paths.optionsHtml,
+      filename: "options.html",
       minify: {
         removeComments: true,
         collapseWhitespace: true,

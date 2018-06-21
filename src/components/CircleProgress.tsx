@@ -21,9 +21,9 @@ const styles = (theme: Theme) => ({
 function CircularIndeterminate(props: CirleProgressProps) {
   const { classes } = props;
   return (
-    <React.Fragment>
+    <div>
       <CircularProgress className={classes.progress} style={{ color: purple[500] }} thickness={7} />
-    </React.Fragment>
+    </div>
   );
 }
 

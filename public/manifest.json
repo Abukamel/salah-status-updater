@@ -9,8 +9,14 @@
   "homepage_url": "https://github.com/Abukamel/salah-status-updater",
   "browser_action": {
     "default_popup": "index.html",
-    "default_title": "Salah Status Updater"
+    "default_title": "Salah Status Updater",
+    "default_icon": {
+      "16": "prayer-16.png",
+      "48": "prayer-64.png",
+      "128": "prayer-128.png"
+    }
   },
+  "options_page": "options.html",
   "icons": {
     "16": "prayer-16.png",
     "48": "prayer-64.png",

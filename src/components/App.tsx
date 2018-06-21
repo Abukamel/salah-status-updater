@@ -10,16 +10,17 @@ import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
 // @ts-ignore
 import * as log from "loglevel";
 import * as React from "react";
-import { SlackTeam } from "./background";
-import { extensionID } from "./config";
-import * as storage from "./storage";
+import { SlackTeam } from "../background";
+import { extensionID } from "../config";
+import * as storage from "../storage";
 
 import { Avatar, ListItemAvatar } from "@material-ui/core";
-import { Launch } from "@material-ui/icons";
 import CircleProgress from "./CircleProgress";
-import IdleTimeConfDialog from "./IdleTimeConfDialog";
 
 const styles = (theme: Theme) => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
   root: theme.mixins.gutters({
     height: "100%",
     marginTop: theme.spacing.unit * 2,
@@ -50,6 +51,11 @@ class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = { slackTeams: [], connectInProgress: false };
     this.connectToSlackWorkspace = this.connectToSlackWorkspace.bind(this);
+    this.openOptionsPage = this.openOptionsPage.bind(this);
+  }
+
+  public openOptionsPage() {
+    chrome.tabs.create({ url: chrome.runtime.getURL("options.html") });
   }
 
   public connectToSlackWorkspace() {
@@ -80,14 +86,6 @@ class App extends React.Component<AppProps, AppState> {
   public componentDidMount() {
     const slackTeams = storage.get("slackTeams");
     if (slackTeams instanceof Array && slackTeams.length > 0) {
-      // const teamNames: SlackTeam[] = [];
-      // for (const team of slackTeams) {
-      //   teamNames.push({
-      //     access_token: team.access_token,
-      //     team_id: team.team_id,
-      //     team_name: team.team_name
-      //   });
-      // }
       this.setState({ slackTeams });
     }
   }
@@ -97,74 +95,52 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div>
         <Paper className={classes.root} elevation={0}>
-          <IdleTimeConfDialog />
           <List
             component="nav"
             subheader={
               <ListSubheader component="div">
-                Connected Workspaces:
+                Connected Slack Workspaces ({this.state.slackTeams && this.state.slackTeams.length > 0 ? this.state.slackTeams.length: 0}):
               </ListSubheader>
             }
           >
-            {this.state.slackTeams && this.state.slackTeams.length > 0 ? (
-              this.state.slackTeams.map(team => {
-                return (
-                  <ListItem key={team.team_id || undefined} button={true}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <AssignmentTurnedIn />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      inset={true}
-                      primary={team.team_name || null}
-                    />
-                  </ListItem>
-                );
-              })
-            ) : (
-              <ListItem button={true} onClick={this.connectToSlackWorkspace}>
-                <ListItemAvatar>
-                  <Avatar className={"first-slack-connect"}>
-                    <Launch />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  className={"first-slack-connect"}
-                  inset={true}
-                  primary={"Connect First Workspace"}
-                />
-              </ListItem>
-            )}
+            {this.state.slackTeams && this.state.slackTeams.length > 0
+              ? this.state.slackTeams.map(team => {
+                  return (
+                    <ListItem key={team.team_id || undefined} button={true}>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <AssignmentTurnedIn />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        inset={true}
+                        primary={team.team_name || null}
+                      />
+                    </ListItem>
+                  );
+                })
+              : null}
           </List>
+          {this.state.connectInProgress ? <CircleProgress /> : null}
           <Button
             onClick={this.connectToSlackWorkspace}
+            className={classes.button}
             variant="contained"
             color="primary"
             id={"slack-connect"}
           >
-            Add Workspace
+            Connect Slack
           </Button>
-          {this.state.connectInProgress ? <CircleProgress /> : null}
-        </Paper>
-        <span>
-          Icon made by{" "}
-          <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">
-            Eucalyp
-          </a>{" "}
-          from{" "}
-          <a href="https://www.flaticon.com/" title="Flaticon">
-            www.flaticon.com
-          </a>{" "}
-          is licensed by{" "}
-          <a
-            href="http://creativecommons.org/licenses/by/3.0/"
-            title="Creative Commons BY 3.0"
-            target="_blank"
+          <Button
+            onClick={this.openOptionsPage}
+            className={classes.button}
+            variant="contained"
+            color="secondary"
+            id={"options-page"}
           >
-            CC 3.0 BY
-          </a>
-        </span>
+            Preferences
+          </Button>
+        </Paper>
       </div>
     );
   }
