@@ -1,6 +1,4 @@
-import * as _ from "lodash";
-// @ts-ignore
-import * as log from "loglevel";
+import { isEqual, uniqWith } from "lodash";
 import * as store from "store";
 
 interface StoreData {
@@ -13,7 +11,7 @@ export function put(data: StoreData, combine: boolean) {
     const currentVersion = store.get(data.key);
     if (currentVersion instanceof Array) {
       currentVersion.push(data.value);
-      const newVersion = _.uniqWith(currentVersion, _.isEqual);
+      const newVersion = uniqWith(currentVersion, isEqual);
       store.set(data.key, newVersion);
     } else if (!currentVersion && combine) {
       store.set(data.key, [data.value]);
@@ -21,7 +19,7 @@ export function put(data: StoreData, combine: boolean) {
       store.set(data.key, data.value);
     }
   } catch (e) {
-    log.error(e);
+    throw e;
   }
 }
 

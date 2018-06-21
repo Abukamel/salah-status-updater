@@ -11,8 +11,8 @@ import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
 import * as log from "loglevel";
 import * as React from "react";
 import { SlackTeam } from "../background";
-import { extensionID } from "../includes/config";
-import * as storage from "../includes/storage";
+import { extensionID } from "../imports/config";
+import * as storage from "../imports/storage";
 
 import { Avatar, ListItemAvatar } from "@material-ui/core";
 import CircleProgress from "./CircleProgress";

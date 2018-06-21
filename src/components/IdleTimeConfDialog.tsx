@@ -5,8 +5,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import * as React from "react";
-import * as config from "../includes/config";
-import * as storage from "../includes/storage";
+import * as config from "../imports/config";
+import * as storage from "../imports/storage";
 
 interface IdleTimeConfDialogState {
   asr: number;
