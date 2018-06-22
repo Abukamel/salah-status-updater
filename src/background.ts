@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import * as config from "./imports/config";
+import * as constants from "./imports/constants";
 import * as location from "./imports/location";
 import * as schedule from "./imports/schedule";
 import * as slack from "./imports/slack";
@@ -23,7 +23,10 @@ chrome.runtime.onInstalled.addListener(() => {
   location.setOrUpdateCurrent();
 
   // Set default prayers idle time
-  storage.put({ key: "prayersIdleTime", value: config.prayersIdleTime }, false);
+  storage.put(
+    { key: "prayersIdleTime", value: constants.prayersIdleTime },
+    false
+  );
 
   // Update current location and Salah times every 6 hour
   chrome.alarms.create("updateLocationAndSalahTimes", {
@@ -55,7 +58,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
   } else if (alarm.name === "updateLocationAndSalahTimes") {
     location.setOrUpdateCurrent();
     // Removing status after Salah time is up
-  } else if (alarm.name === `remove_${alarm.name}_status`) {
+  } else if (constants.prayersStatusRemoveAlarmNames.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
       if (team && team.access_token) {
         // End do not disturb
@@ -70,19 +73,14 @@ chrome.alarms.onAlarm.addListener(alarm => {
     }
 
     // Salah Alarms
-  } else if (
-    alarm.name === "fajr" ||
-    alarm.name === "dhuhr" ||
-    alarm.name === "asr" ||
-    alarm.name === "maghrib" ||
-    alarm.name === "isha"
-  ) {
+  } else if (constants.prayerNames.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
       if (team && team.access_token) {
         // Set an alarm to remove the status from slack
         chrome.alarms.create(`remove_${alarm.name}_status`, {
           when: Number(
-            alarm.scheduledTime + config.prayersIdleTime[alarm.name] * 60 * 1000
+            alarm.scheduledTime +
+              constants.prayersIdleTime[alarm.name] * 60 * 1000
           )
         });
 
@@ -91,14 +89,14 @@ chrome.alarms.onAlarm.addListener(alarm => {
           {
             statusEmoji: ":mosque:",
             statusText: `Praying ${alarm.name} now, will be back after ${
-              config.prayersIdleTime[alarm.name]
+              constants.prayersIdleTime[alarm.name]
             }m in shaa Allah`
           },
           team.access_token
         );
 
         // Activate slack Do not disturb state
-        slack.setDND(config.prayersIdleTime[alarm.name], team.access_token);
+        slack.setDND(constants.prayersIdleTime[alarm.name], team.access_token);
 
         // Recreate prayer alarms every Salah
         schedule.createPrayerAlarms();

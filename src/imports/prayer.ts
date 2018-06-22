@@ -1,4 +1,4 @@
-import * as config from "./config";
+import * as constants from "./constants";
 import { prayTimes } from "./PrayTimes";
 import * as storage from "./storage";
 
@@ -19,7 +19,7 @@ export function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
         [locationTimezoneInfo.latitude, locationTimezoneInfo.longitude],
         locationTimezoneInfo.timezoneOffset,
         locationTimezoneInfo.dayLightSaving,
-        locationTimezoneInfo.timeFormat || config.TIME_FORMAT
+        locationTimezoneInfo.timeFormat || constants.TIME_FORMAT
       )
     },
     false

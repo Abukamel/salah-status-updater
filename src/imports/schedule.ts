@@ -1,6 +1,6 @@
-import { omit, keys } from "lodash";
-import * as storage from "./storage";
+import { keys, omit } from "lodash";
 import * as moment from "moment";
+import * as storage from "./storage";
 
 export function createPrayerAlarms() {
   // Add alarms for prayers

@@ -5,7 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import * as React from "react";
-import * as config from "../imports/config";
+import * as constants from "../imports/constants";
 import * as storage from "../imports/storage";
 
 interface IdleTimeConfDialogState {
@@ -26,19 +26,19 @@ export default class FormDialog extends React.Component<
     this.state = {
       asr: storage.get("prayersIdleTime")
         ? storage.get("prayersIdleTime").asr
-        : config.prayersIdleTime.asr,
+        : constants.prayersIdleTime.asr,
       dhuhr: storage.get("prayersIdleTime")
         ? storage.get("prayersIdleTime").dhuhr
-        : config.prayersIdleTime.dhuhr,
+        : constants.prayersIdleTime.dhuhr,
       fajr: storage.get("prayersIdleTime")
         ? storage.get("prayersIdleTime").fajr
-        : config.prayersIdleTime.fajr,
+        : constants.prayersIdleTime.fajr,
       isha: storage.get("prayersIdleTime")
         ? storage.get("prayersIdleTime").isha
-        : config.prayersIdleTime.isha,
+        : constants.prayersIdleTime.isha,
       maghrib: storage.get("prayersIdleTime")
         ? storage.get("prayersIdleTime").maghrib
-        : config.prayersIdleTime.maghrib,
+        : constants.prayersIdleTime.maghrib,
       open: false
     };
     this.handleChange = this.handleChange.bind(this);

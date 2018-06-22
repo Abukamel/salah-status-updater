@@ -1,4 +1,4 @@
-import * as config from "./imports/config";
+import * as constants from "./imports/constants";
 import * as storage from "./imports/storage";
 
 window.onload = () => {
@@ -7,9 +7,9 @@ window.onload = () => {
   chrome.identity.launchWebAuthFlow(
     {
       interactive: true,
-      url: `${config.slackAuthorizeURL}?client_id=${
-        config.slackClientID
-        }&scope=${config.slackScope}&redirect_uri=${config.herokuRedirectURI}`
+      url: `${constants.slackAuthorizeURL}?client_id=${
+        constants.slackClientID
+        }&scope=${constants.slackScope}&redirect_uri=${constants.herokuRedirectURI}`
     },
     (redirectURI: string) => {
       NProgress.done();

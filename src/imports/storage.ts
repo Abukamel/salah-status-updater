@@ -19,7 +19,7 @@ export function put(data: StoreData, combine: boolean) {
       store.set(data.key, data.value);
     }
   } catch (e) {
-    throw e;
+    throw new Error(e);
   }
 }
 

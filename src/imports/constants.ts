@@ -15,3 +15,5 @@ export const prayersIdleTime = {
   isha: 30,
   maghrib: 30
 };
+export const prayerNames: string[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+export const prayersStatusRemoveAlarmNames: string[] = ["remove_fajr_status", "remove_dhuhr_status", "remove_asr_status", "remove_maghrib_status", "remove_isha_status"];

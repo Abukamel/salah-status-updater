@@ -1,4 +1,4 @@
-import * as config from "./config";
+import * as constants from "./constants";
 import * as prayer from "./prayer"
 import * as storage from "./storage";
 
@@ -23,8 +23,8 @@ function success(pos: any) {
   const crd = pos.coords;
   let locationInfo: LocationInfo | undefined;
     fetch(
-      `${config.tzDBAPIURL}/get-time-zone?key=${
-        config.timeZoneDBAPIKey
+      `${constants.tzDBAPIURL}/get-time-zone?key=${
+        constants.timeZoneDBAPIKey
       }&by=position&lat=${crd.latitude}&lng=${crd.longitude}&format=json`
     )
       .then(response => {
