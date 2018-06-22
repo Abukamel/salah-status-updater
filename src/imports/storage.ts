@@ -26,3 +26,13 @@ export function put(data: StoreData, combine: boolean) {
 export function get(key: string) {
   return store.get(key);
 }
+
+export function deleteSlackTeam(teamID: number) {
+  const slackTeams = get("slackTeams");
+  if (slackTeams) {
+    store.set(
+      "slackTeams",
+      slackTeams.filter((team: any) => team.team_id !== teamID)
+    );
+  }
+}

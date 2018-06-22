@@ -6,7 +6,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Paper from "@material-ui/core/Paper";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
+import Delete from "@material-ui/icons/Delete";
+// import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
+import SentimentVerySatisfied from "@material-ui/icons/SentimentVerySatisfied";
 // @ts-ignore
 import * as log from "loglevel";
 import * as React from "react";
@@ -50,6 +52,12 @@ class App extends React.Component<AppProps, AppState> {
     this.state = { slackTeams: [], connectInProgress: false };
     this.connectToSlackWorkspace = this.connectToSlackWorkspace.bind(this);
     this.openOptionsPage = this.openOptionsPage.bind(this);
+    this.deleteSlackWorkspace = this.deleteSlackWorkspace.bind(this);
+  }
+
+  public deleteSlackWorkspace(e: any) {
+    storage.deleteSlackTeam(e.currentTarget.id);
+    this.setState({ slackTeams: storage.get("slackTeams") });
   }
 
   public openOptionsPage() {
@@ -65,7 +73,7 @@ class App extends React.Component<AppProps, AppState> {
       response => {
         if (response) {
           this.setState({ connectInProgress: false });
-          chrome.runtime.sendMessage({"create_alarms": true});
+          chrome.runtime.sendMessage({ create_alarms: true });
         } else {
           console.log("Where is my response");
         }
@@ -102,13 +110,19 @@ class App extends React.Component<AppProps, AppState> {
                     <ListItem key={team.team_id || undefined} button={true}>
                       <ListItemAvatar>
                         <Avatar>
-                          <AssignmentTurnedIn />
+                          <SentimentVerySatisfied />
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
                         inset={true}
                         primary={team.team_name || null}
                       />
+                      <Avatar>
+                        <Delete
+                          onClick={this.deleteSlackWorkspace}
+                          id={team.team_id || undefined}
+                        />
+                      </Avatar>
                     </ListItem>
                   );
                 })

@@ -35,7 +35,7 @@ export function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
   //       fajr: "03:17",
   //       imsak: "03:07",
   //       isha: "22:26",
-  //       maghrib: "22:23",
+  //       maghrib: "00:12",
   //       midnight: "23:41",
   //       sunrise: "04:48",
   //       sunset: "18:35"
