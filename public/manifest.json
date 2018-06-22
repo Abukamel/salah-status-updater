@@ -4,7 +4,7 @@
   "name": "Salah Status Updater",
   "description":
     "Update user status on slack to DND mode after Muslim Azan until prayer ends",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Ahmed Kamel <k.tricky@gmail.com>",
   "homepage_url": "https://github.com/Abukamel/salah-status-updater",
   "browser_action": {
