@@ -316,6 +316,15 @@ module.exports = {
     // Minify the code.
     new UglifyJsPlugin({
       uglifyOptions: {
+        unused: true,
+        dead_code: true, // big one--strip code that will never execute
+        warnings: false, // good for prod apps so users can't peek behind curtain
+        drop_debugger: true,
+        conditionals: true,
+        evaluate: true,
+        drop_console: true, // strips console statements
+        sequences: true,
+        booleans: true,
         parse: {
           // we want uglify-js to parse ecma 8 code. However we want it to output
           // ecma 5 compliant code, to avoid issues with older browsers, this is
@@ -324,6 +333,8 @@ module.exports = {
           ecma: 8
         },
         compress: {
+          pure_getters: true,
+          unsafe: true,
           ecma: 5,
           warnings: false,
           // Disabled because of an issue with Uglify breaking seemingly valid code:

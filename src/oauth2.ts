@@ -22,7 +22,7 @@ window.onload = () => {
       storage.put({ key: "slackTeams", value: slackCredentials }, true);
       chrome.browserAction.setBadgeText({ text: "" });
       chrome.runtime.sendMessage({oauth2_done: true}, (msg)=>{
-        if (msg) {
+        if (msg && msg.wannaCreateAlarms) {
          chrome.runtime.sendMessage({create_alarms: true})
         }
       });

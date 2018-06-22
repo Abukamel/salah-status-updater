@@ -1,8 +1,7 @@
-import { omit } from "lodash";
 import * as moment from "moment";
-// import * as schedule from "node-schedule";
 import * as config from "./imports/config";
 import * as location from "./imports/location";
+import * as schedule from "./imports/schedule";
 import * as slack from "./imports/slack";
 import * as storage from "./imports/storage";
 
@@ -15,7 +14,9 @@ export interface SlackTeam {
 chrome.runtime.onInstalled.addListener(() => {
   // Alert user to connect
   if (!storage.get("slackTeams")) {
-    chrome.browserAction.setBadgeText({ text: "New!" });
+    chrome.browserAction.setBadgeText({
+      text: "New!"
+    });
   }
 
   // Set current geographic location
@@ -24,140 +25,104 @@ chrome.runtime.onInstalled.addListener(() => {
   // Set default prayers idle time
   storage.put({ key: "prayersIdleTime", value: config.prayersIdleTime }, false);
 
-  // Update current location and Salah times every hour
-  setInterval(() => {
-    location.setOrUpdateCurrent();
-  }, 3600 * 1000);
+  // Update current location and Salah times every 6 hour
+  chrome.alarms.create("updateLocationAndSalahTimes", {
+    periodInMinutes: 360,
+    when: Date.now()
+  });
+
+  // Update Salah Alarms everyday after midnight
+  chrome.alarms.create("updateSalahAlarmsAfterMidnight", {
+    periodInMinutes: 1440,
+    when: Number(moment("0:1", "HH:mm"))
+  });
+
+  setTimeout(() => {
+    // Add alarms for prayers
+    schedule.createPrayerAlarms();
+  }, 10 * 1000);
 });
 
-// chrome.runtime.onConnect.addListener(port => {
-//   port.onDisconnect.addListener(currentPort => {
-//     console.log(`Disconnected port: ${currentPort}`);
-//   });
-//
-//   port.onMessage.addListener(msg => {
-//     if (msg.add_slack_team) {
-//       chrome.identity.launchWebAuthFlow(
-//         {
-//           interactive: true,
-//           url: `${config.slackAuthorizeURL}?client_id=${
-//             config.slackClientID
-//           }&scope=${config.slackScope}&redirect_uri=${config.herokuRedirectURI}`
-//         },
-//         (redirectURI: string) => {
-//           const parsedURL = new URL(redirectURI);
-//           const slackCredentials = {
-//             access_token: parsedURL.searchParams.get("access_token"),
-//             team_id: parsedURL.searchParams.get("team_id"),
-//             team_name: parsedURL.searchParams.get("team_name")
-//           };
-//           storage.put({ key: "slackTeams", value: slackCredentials }, true);
-//           chrome.browserAction.setBadgeText({ text: "" });
-//           port.postMessage({ added: true });
-//         }
-//       );
-//     } else if (msg.create_alarms) {
-//       // Add alarms for prayers
-//       const prayerTimes = omit(storage.get("prayerTimes"), [
-//         "imsak",
-//         "sunrise",
-//         "sunset",
-//         "midnight"
-//       ]);
-//
-//       for (const currentPrayer of Object.keys(prayerTimes)) {
-//         chrome.alarms.create(currentPrayer, {
-//           when: Number(moment(prayerTimes[currentPrayer]))
-//         });
-//       }
-//
-//       chrome.alarms.onAlarm.addListener(alarm => {
-//         for (const team of storage.get("slackTeams")) {
-//           slack.setUserStatus(
-//             {
-//               statusEmoji: ":mosque:",
-//               statusText: `Praying ${
-//                 alarm.name
-//               } now, will be back after in shaa Allah`
-//             },
-//             team.access_token
-//           );
-//         }
-//       });
-//
-//       chrome.alarms.getAll(alarms => {
-//         for (const alarm of alarms) {
-//           console.log(alarm.name);
-//         }
-//       });
-//       port.disconnect();
-//     }
-//   });
-// });
+chrome.runtime.onStartup.addListener(() => {
+  // Add alarms for prayers
+  schedule.createPrayerAlarms();
+});
+
+// Act upon triggered alarms
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === "updateSalahAlarmsAfterMidnight") {
+    schedule.createPrayerAlarms();
+  } else if (alarm.name === "updateLocationAndSalahTimes") {
+    location.setOrUpdateCurrent();
+    // Removing status after Salah time is up
+  } else if (alarm.name === `remove_${alarm.name}_status`) {
+    for (const team of storage.get("slackTeams")) {
+      if (team && team.access_token) {
+        // End do not disturb
+        slack.endDND(team.access_token);
+
+        // Remove Status
+        slack.setUserStatus(
+          { statusEmoji: "", statusText: "" },
+          team.access_token
+        );
+      }
+    }
+
+    // Salah Alarms
+  } else if (
+    alarm.name === "fajr" ||
+    alarm.name === "dhuhr" ||
+    alarm.name === "asr" ||
+    alarm.name === "maghrib" ||
+    alarm.name === "isha"
+  ) {
+    for (const team of storage.get("slackTeams")) {
+      if (team && team.access_token) {
+        // Set an alarm to remove the status from slack
+        chrome.alarms.create(`remove_${alarm.name}_status`, {
+          when: Number(
+            alarm.scheduledTime + config.prayersIdleTime[alarm.name] * 60 * 1000
+          )
+        });
+
+        // Update user profile status on slack
+        slack.setUserStatus(
+          {
+            statusEmoji: ":mosque:",
+            statusText: `Praying ${alarm.name} now, will be back after ${
+              config.prayersIdleTime[alarm.name]
+            }m in shaa Allah`
+          },
+          team.access_token
+        );
+
+        // Activate slack Do not disturb state
+        slack.setDND(config.prayersIdleTime[alarm.name], team.access_token);
+
+        // Recreate prayer alarms every Salah
+        schedule.createPrayerAlarms();
+      }
+    }
+  }
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Request for adding a slack workspace
   if (request.add_slack_team) {
     chrome.tabs.create({ url: "oauth2.html" }, tab =>
       storage.put({ key: "lastOauth2TabId", value: tab.id }, false)
     );
     sendResponse({ added: true });
-    // // Save oauth2 access_token from slack into storage
-    // chrome.identity.launchWebAuthFlow(
-    //   {
-    //     interactive: true,
-    //     url: `${config.slackAuthorizeURL}?client_id=${
-    //       config.slackClientID
-    //     }&scope=${config.slackScope}&redirect_uri=${config.herokuRedirectURI}`
-    //   },
-    //   (redirectURI: string) => {
-    //     const parsedURL = new URL(redirectURI);
-    //     const slackCredentials = {
-    //       access_token: parsedURL.searchParams.get("access_token"),
-    //       team_id: parsedURL.searchParams.get("team_id"),
-    //       team_name: parsedURL.searchParams.get("team_name")
-    //     };
-    //     storage.put({ key: "slackTeams", value: slackCredentials }, true);
-    //     chrome.browserAction.setBadgeText({ text: "" });
-    //     sendResponse({ added: true });
-    //   }
-    // );
-  } else if (request.create_alarms) {
-    chrome.tabs.remove([Number(storage.get("lastOauth2TabId"))]);
-    // Add alarms for prayers
-    const prayerTimes = omit(storage.get("prayerTimes"), [
-      "imsak",
-      "sunrise",
-      "sunset",
-      "midnight"
-    ]);
 
-    for (const currentPrayer of Object.keys(prayerTimes)) {
-      chrome.alarms.create(currentPrayer, {
-        when: Number(moment(prayerTimes[currentPrayer], "HH:mm"))
-      });
-    }
-
-    chrome.alarms.onAlarm.addListener(alarm => {
-      for (const team of storage.get("slackTeams")) {
-        slack.setUserStatus(
-          {
-            statusEmoji: ":mosque:",
-            statusText: `Praying ${
-              alarm.name
-            } now, will be back after in shaa Allah`
-          },
-          team.access_token
-        );
-      }
-    });
-
-    chrome.alarms.getAll(alarms => {
-      for (const alarm of alarms) {
-        console.log(alarm.name);
-      }
-    });
+    // Ackowledge from oauth2.ts that slack space is added
   } else if (request.oauth2_done) {
     sendResponse({ wannaCreateAlarms: true });
+
+    // Request from oauth2 for creating Salah Alarms
+  } else if (request.create_alarms) {
+    // Close opened oauth2.html tab
+    chrome.tabs.remove([Number(storage.get("lastOauth2TabId"))]);
   }
   return true;
 });
