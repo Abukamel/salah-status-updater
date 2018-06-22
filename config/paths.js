@@ -46,6 +46,7 @@ module.exports = {
   appHtml: resolveApp('public/popup.html'),
   appIndexJs: resolveApp('src/popup.tsx'),
   optionsHtml: resolveApp('public/options.html'),
+  oauth2Html: resolveApp('public/oauth2.html'),
   optionsJs: resolveApp('src/options.tsx'),
   backgroundJs: resolveApp('src/background.ts'),
   appPackageJson: resolveApp('package.json'),

@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as log from "loglevel";
 import * as qs from "qs";
+import * as request from "request";
 import * as config from "./config";
 
 export function setDND(numberOfMinutes: number, accessToken: string) {
@@ -14,7 +15,8 @@ export function setDND(numberOfMinutes: number, accessToken: string) {
     },
     method: "POST"
   })
-    .then(response => log.info(response))
+    .then(response => response.json())
+    .then(res => log.info(res))
     .catch(e => log.error(e));
 }
 
@@ -28,7 +30,8 @@ export function endDND(accessToken: string) {
     },
     method: "POST"
   })
-    .then(response => log.info(response))
+    .then(response => response.json())
+    .then(res => log.info(res))
     .catch(e => log.error(e));
 }
 
@@ -38,19 +41,42 @@ interface StatusObject {
 }
 
 export function setUserStatus(profile: StatusObject, accessToken: string) {
-  fetch(`${config.slackAPIURL}/users.profile.set`, {
-    body: qs.stringify({
-      profile: {
-        status_emoji: profile.statusEmoji,
-        status_text: profile.statusText
-      },
+  const options = {
+    formData: {
+      profile: `{"status_text": "${profile.statusText}", "status_emoji": "${
+        profile.statusEmoji
+        }"}`,
       token: accessToken
-    }),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
     },
-    method: "POST"
-  })
-    .then(response => log.info(response))
-    .catch(e => log.error(e));
+    headers: {
+      "content-type":
+        "multipart/form-data; boundary=---011000010111000001101001"
+    },
+    method: "POST",
+    url: `${config.slackAPIURL}/users.profile.set`,
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      throw new Error(error);
+    }
+    console.log(body);
+  });
+
+  // fetch(`${config.slackAPIURL}/users.profile.set`, {
+  //   body: qs.stringify({
+  //     profile: {
+  //       status_emoji: profile.statusEmoji,
+  //       status_text: profile.statusText
+  //     },
+  //     token: accessToken
+  //   }),
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+  //   },
+  //   method: "POST"
+  // })
+  //   .then(response => response.json())
+  //   .then(res => log.info(res))
+  //   .catch(e => log.error(e));
 }

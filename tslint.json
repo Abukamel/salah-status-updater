@@ -2,9 +2,10 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "import-sources-order": "any",
   "rules": {
-    "interface-name": [true, "never-prefix"]
+    "interface-name": [true, "never-prefix"],
+    "no-console": false
   },
   "linterOptions": {
-    "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/includes/PrayTimes.js"]
+    "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/imports/PrayTimes.js"]
   }
 }

@@ -36,9 +36,12 @@
   "externally_connectable": {
     "matches": ["*://localhost/*"]
   },
+  "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'",
   "permissions": [
+    "alarms",
     "identity",
     "storage",
+    "tabs",
     "background",
     "geolocation",
     "https://slack.com/*",

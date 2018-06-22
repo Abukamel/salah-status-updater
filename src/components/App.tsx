@@ -11,15 +11,13 @@ import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
 import * as log from "loglevel";
 import * as React from "react";
 import { SlackTeam } from "../background";
-import { extensionID } from "../imports/config";
 import * as storage from "../imports/storage";
 
 import { Avatar, ListItemAvatar } from "@material-ui/core";
-import CircleProgress from "./CircleProgress";
 
 const styles = (theme: Theme) => ({
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
   },
   root: theme.mixins.gutters({
     height: "100%",
@@ -59,26 +57,18 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public connectToSlackWorkspace() {
-    this.setState(
-      prevState => {
-        return { connectInProgress: !prevState.connectInProgress };
+    this.setState({ connectInProgress: true });
+    chrome.runtime.sendMessage(
+      {
+        add_slack_team: true
       },
-      () => {
-        chrome.runtime.sendMessage(
-          extensionID,
-          {
-            add_slack_team: true
-          },
-          response => {
-            if (chrome.runtime.lastError) {
-              log.error(chrome.runtime.lastError.message);
-            } else {
-              this.setState(prevState => {
-                return { connectInProgress: !prevState.connectInProgress };
-              });
-            }
-          }
-        );
+      response => {
+        if (response) {
+          this.setState({ connectInProgress: false });
+          chrome.runtime.sendMessage({"create_alarms": true});
+        } else {
+          console.log("Where is my response");
+        }
       }
     );
   }
@@ -99,7 +89,10 @@ class App extends React.Component<AppProps, AppState> {
             component="nav"
             subheader={
               <ListSubheader component="div">
-                Connected Slack Workspaces ({this.state.slackTeams && this.state.slackTeams.length > 0 ? this.state.slackTeams.length: 0}):
+                Connected Slack Workspaces ({this.state.slackTeams &&
+                this.state.slackTeams.length > 0
+                  ? this.state.slackTeams.length
+                  : 0}):
               </ListSubheader>
             }
           >
@@ -121,7 +114,6 @@ class App extends React.Component<AppProps, AppState> {
                 })
               : null}
           </List>
-          {this.state.connectInProgress ? <CircleProgress /> : null}
           <Button
             onClick={this.connectToSlackWorkspace}
             className={classes.button}
