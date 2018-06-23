@@ -88,9 +88,9 @@ chrome.alarms.onAlarm.addListener(alarm => {
         slack.setUserStatus(
           {
             statusEmoji: ":mosque:",
-            statusText: `Praying ${alarm.name} now, will be back at ${
-              moment(Date.now() + (constants.prayersIdleTime[alarm.name] * 60 * 1000)).format("hh:mm A")
-            } in shaa Allah`
+            statusText: `Praying ${alarm.name} now, will be back at ${moment(
+              Date.now() + constants.prayersIdleTime[alarm.name] * 60 * 1000
+            ).format("hh:mm A")} in shaa Allah`
           },
           team.access_token
         );
@@ -116,6 +116,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Acknowledge from oauth2.ts that slack space is added
   } else if (request.oauth2_done) {
     sendResponse({ wannaCreateAlarms: true });
+    chrome.notifications.create({
+      iconUrl: "prayer-128.png",
+      message: "Your Status will be updated at Salah times in shaa Allah",
+      requireInteraction: true,
+      title: "Slack Team Added",
+      type: "basic"
+    });
 
     // Request from oauth2 for creating Salah Alarms
   } else if (request.create_alarms) {

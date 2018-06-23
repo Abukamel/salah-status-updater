@@ -56,7 +56,17 @@ export default class FormDialog extends React.Component<
   };
 
   public handleClose = () => {
-    this.setState({ open: false });
+    // this.setState({ open: false });
+    this.setState(prevState => {
+      return {
+        asr: prevState.asr,
+        dhuhr: prevState.dhuhr,
+        fajr: prevState.fajr,
+        isha: prevState.isha,
+        maghrib: prevState.maghrib,
+        open: !prevState.open
+      };
+    });
     storage.put(
       {
         key: "prayersIdleTime",
@@ -102,10 +112,10 @@ export default class FormDialog extends React.Component<
       <div>
         <Button
           onClick={this.handleClickOpen}
-          color={"default"}
-          variant={"contained"}
+          color={"secondary"}
+          variant={"outlined"}
         >
-          Tweak praying idle times
+          Idle Salah times
         </Button>
         <Dialog
           open={this.state.open}
@@ -166,7 +176,7 @@ export default class FormDialog extends React.Component<
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} color={"primary"}>
               Update
             </Button>
           </DialogActions>

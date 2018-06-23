@@ -7,10 +7,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Paper from "@material-ui/core/Paper";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Delete from "@material-ui/icons/Delete";
-// import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedIn";
 import SentimentVerySatisfied from "@material-ui/icons/SentimentVerySatisfied";
-// @ts-ignore
-import * as log from "loglevel";
 import * as React from "react";
 import { SlackTeam } from "../background";
 import * as storage from "../imports/storage";
