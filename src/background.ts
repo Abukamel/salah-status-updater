@@ -88,9 +88,9 @@ chrome.alarms.onAlarm.addListener(alarm => {
         slack.setUserStatus(
           {
             statusEmoji: ":mosque:",
-            statusText: `Praying ${alarm.name} now, will be back after ${
-              constants.prayersIdleTime[alarm.name]
-            }m in shaa Allah`
+            statusText: `Praying ${alarm.name} now, will be back at ${
+              moment(Date.now() + (constants.prayersIdleTime[alarm.name] * 60 * 1000)).format("HH:mm A")
+            } in shaa Allah`
           },
           team.access_token
         );
@@ -113,7 +113,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
     sendResponse({ added: true });
 
-    // Ackowledge from oauth2.ts that slack space is added
+    // Acknowledge from oauth2.ts that slack space is added
   } else if (request.oauth2_done) {
     sendResponse({ wannaCreateAlarms: true });
 
