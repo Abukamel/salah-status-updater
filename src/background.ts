@@ -60,37 +60,37 @@ chrome.alarms.onAlarm.addListener(alarm => {
     // Removing status after Salah time is up
   } else if (constants.PRAYERS_STATUS_REMOVE_ALARM_NAMES.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
-      if (team && team.access_token) {
+      if (team && "access_token" in team) {
         // Get last slack profile status before Salah
-        const lastProfileStatus = storage.get(
+        const lastSlackProfileStatus = storage.get(
           `lastSlackProfileStatus${team.team_id}`
         );
 
         // Get last slack Dnd and Snooze settings
-        const lastDndSnoozeSettings = storage.get(
-          `lastDndSnoozeSettings${team.team_id}`
+        const lastSlackDndSnoozeSettings = storage.get(
+          `lastSlackDndSnoozeSettings${team.team_id}`
         );
 
         // Restore last user Status
         slack.setUserStatus(
           {
-            statusEmoji: lastProfileStatus.profile.status_emoji,
-            statusText: lastProfileStatus.profile.status_text
+            statusEmoji: lastSlackProfileStatus.profile.status_emoji,
+            statusText: lastSlackProfileStatus.profile.status_text
           },
           team.access_token
         );
 
         // Set last Snooze settings if needed
-        if (lastDndSnoozeSettings && "snooze_enabled" in lastDndSnoozeSettings) {
+        if (lastSlackDndSnoozeSettings && "snooze_enabled" in lastSlackDndSnoozeSettings) {
           slack.setSnooze(
-            lastDndSnoozeSettings.snooze_remaining -
+            lastSlackDndSnoozeSettings.snooze_remaining -
               storage.get("prayersIdleTime")[storage.get("lastSalahName")],
             team.access_token
           );
         }
 
         // End do not disturb if needed
-        if (!lastDndSnoozeSettings.dnd_enabled) {
+        if ("dnd_enabled" in lastSlackDndSnoozeSettings && !lastSlackDndSnoozeSettings.dnd_enabled) {
           slack.endDnd(team.access_token);
         }
       }
@@ -99,7 +99,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
     // Salah Alarms
   } else if (constants.PRAYER_NAMES.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
-      if (team && team.access_token) {
+      if (team && "access_token" in team) {
         // Set an alarm to remove the status from slack
         chrome.alarms.create(`remove_${alarm.name}_status`, {
           when: Number(

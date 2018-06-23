@@ -30,7 +30,7 @@ export function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
     {
       key: "prayerTimes",
       value: {
-        asr: "15:07",
+        asr: "22:55",
         dhuhr: "11:41",
         fajr: "03:17",
         imsak: "03:07",
