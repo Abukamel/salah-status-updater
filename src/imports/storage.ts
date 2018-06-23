@@ -1,3 +1,4 @@
+import { WebClient } from "@slack/client";
 import { isEqual, uniqWith } from "lodash";
 import * as store from "store";
 
@@ -35,4 +36,49 @@ export function deleteSlackTeam(teamID: number) {
       slackTeams.filter((team: any) => team.team_id !== teamID)
     );
   }
+}
+
+export function saveSlackLastProfileStatus(
+  accessToken: string,
+  teamId: string
+) {
+  const slackWebClient = new WebClient(accessToken);
+  return slackWebClient.users.profile
+    .get()
+    .then((result: any) =>
+      put(
+        {
+          key: `lastSlackProfileStatus${teamId}`,
+          value: {
+            status_emoji: result.status_emoji,
+            status_text: result.status_text
+          }
+        },
+        false
+      )
+    )
+    .catch(e => {
+      throw new Error(e);
+    });
+}
+
+export function saveSlackLastDndSnoozeSettings(
+  accessToken: string,
+  teamId: string
+) {
+  const slackWebClient = new WebClient(accessToken);
+  slackWebClient.dnd
+    .info()
+    .then((result: any) =>
+      put(
+        {
+          key: `lastSlackDndSnoozeSettings${teamId}`,
+          value: result
+        },
+        false
+      )
+    )
+    .catch(e => {
+      throw new Error(e);
+    });
 }

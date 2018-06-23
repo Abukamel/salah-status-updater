@@ -61,14 +61,38 @@ chrome.alarms.onAlarm.addListener(alarm => {
   } else if (constants.PRAYERS_STATUS_REMOVE_ALARM_NAMES.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
       if (team && team.access_token) {
-        // End do not disturb
-        slack.endDND(team.access_token);
+        // Get last slack profile status before Salah
+        const lastProfileStatus = storage.get(
+          `lastSlackProfileStatus${team.team_id}`
+        );
 
-        // Remove Status
+        // Get last slack Dnd and Snooze settings
+        const lastDndSnoozeSettings = storage.get(
+          `lastDndSnoozeSettings${team.team_id}`
+        );
+
+        // Restore last user Status
         slack.setUserStatus(
-          { statusEmoji: "", statusText: "" },
+          {
+            statusEmoji: lastProfileStatus.statu_emoji,
+            statusText: lastProfileStatus.status_text
+          },
           team.access_token
         );
+
+        // Set last Snooze settings if needed
+        if (lastDndSnoozeSettings.snooze_enabled) {
+          slack.setSnooze(
+            lastDndSnoozeSettings.snooze_remaining -
+              constants.PRAYERS_IDLE_TIME[storage.get("lastSalahName")],
+            team.access_token
+          );
+        }
+
+        // End do not disturb if needed
+        if (!lastDndSnoozeSettings.dnd_enabled) {
+          slack.endDnd(team.access_token);
+        }
       }
     }
 
@@ -84,6 +108,19 @@ chrome.alarms.onAlarm.addListener(alarm => {
           )
         });
 
+        // Capture last profile status and emoji
+        storage
+          .saveSlackLastProfileStatus(team.access_token, team.team_id)
+          .catch(e => {
+            throw new Error(e);
+          });
+
+        // Capture last Dnd and Snooze settings
+        storage.saveSlackLastDndSnoozeSettings(team.access_token, team.team_id);
+
+        // Capture last Salah name
+        storage.put({ key: "lastSalahName", value: alarm.name }, false);
+
         // Update user profile status on slack
         slack.setUserStatus(
           {
@@ -96,7 +133,10 @@ chrome.alarms.onAlarm.addListener(alarm => {
         );
 
         // Activate slack Do not disturb state
-        slack.setDND(constants.PRAYERS_IDLE_TIME[alarm.name], team.access_token);
+        slack.setSnooze(
+          constants.PRAYERS_IDLE_TIME[alarm.name],
+          team.access_token
+        );
 
         // Recreate prayer alarms every Salah
         schedule.createPrayerAlarms();

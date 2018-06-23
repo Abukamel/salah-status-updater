@@ -5,25 +5,20 @@ interface StatusObject {
   statusEmoji: string;
 }
 
-export function setDND(numberOfMinutes: number, accessToken: string) {
+export function setSnooze(numberOfMinutes: number, accessToken: string) {
   const slackWebClient = new WebClient(accessToken);
-  slackWebClient.dnd
-    .setSnooze({ num_minutes: numberOfMinutes })
-    .then(res => console.log(res))
-    .catch(e => {
-      throw new Error(e);
-    });
+  slackWebClient.dnd.setSnooze({ num_minutes: numberOfMinutes }).catch(e => {
+    throw new Error(e);
+  });
 }
 
-export function endDND(accessToken: string) {
+export function endDnd(accessToken: string) {
   const slackWebClient = new WebClient(accessToken);
-  slackWebClient.dnd
-    .endDnd()
-    .then(res => console.log(res))
-    .catch(e => {
-      throw new Error(e);
-    });
+  slackWebClient.dnd.endDnd().catch(e => {
+    throw new Error(e);
+  });
 }
+
 
 export function setUserStatus(profile: StatusObject, accessToken: string) {
   const slackWebClient = new WebClient(accessToken);
@@ -34,7 +29,6 @@ export function setUserStatus(profile: StatusObject, accessToken: string) {
         status_text: profile.statusText
       })
     })
-    .then(res => console.log(res))
     .catch(e => {
       throw new Error(e);
     });

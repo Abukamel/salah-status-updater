@@ -62,17 +62,13 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public connectToSlackWorkspace() {
-    this.setState({ connectInProgress: true });
     chrome.runtime.sendMessage(
       {
         add_slack_team: true
       },
       response => {
         if (response) {
-          this.setState({ connectInProgress: false });
           chrome.runtime.sendMessage({ create_alarms: true });
-        } else {
-          console.log("Where is my response");
         }
       }
     );
