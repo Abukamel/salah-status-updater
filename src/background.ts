@@ -24,7 +24,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
   // Set default prayers idle time
   storage.put(
-    { key: "prayersIdleTime", value: constants.prayersIdleTime },
+    { key: "prayersIdleTime", value: constants.PRAYERS_IDLE_TIME },
     false
   );
 
@@ -58,7 +58,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
   } else if (alarm.name === "updateLocationAndSalahTimes") {
     location.setOrUpdateCurrent();
     // Removing status after Salah time is up
-  } else if (constants.prayersStatusRemoveAlarmNames.includes(alarm.name)) {
+  } else if (constants.PRAYERS_STATUS_REMOVE_ALARM_NAMES.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
       if (team && team.access_token) {
         // End do not disturb
@@ -73,14 +73,14 @@ chrome.alarms.onAlarm.addListener(alarm => {
     }
 
     // Salah Alarms
-  } else if (constants.prayerNames.includes(alarm.name)) {
+  } else if (constants.PRAYER_NAMES.includes(alarm.name)) {
     for (const team of storage.get("slackTeams")) {
       if (team && team.access_token) {
         // Set an alarm to remove the status from slack
         chrome.alarms.create(`remove_${alarm.name}_status`, {
           when: Number(
             alarm.scheduledTime +
-              constants.prayersIdleTime[alarm.name] * 60 * 1000
+              constants.PRAYERS_IDLE_TIME[alarm.name] * 60 * 1000
           )
         });
 
@@ -89,14 +89,14 @@ chrome.alarms.onAlarm.addListener(alarm => {
           {
             statusEmoji: ":mosque:",
             statusText: `Praying ${alarm.name} now, will be back at ${moment(
-              Date.now() + constants.prayersIdleTime[alarm.name] * 60 * 1000
+              Date.now() + constants.PRAYERS_IDLE_TIME[alarm.name] * 60 * 1000
             ).format("hh:mm A")} in shaa Allah`
           },
           team.access_token
         );
 
         // Activate slack Do not disturb state
-        slack.setDND(constants.prayersIdleTime[alarm.name], team.access_token);
+        slack.setDND(constants.PRAYERS_IDLE_TIME[alarm.name], team.access_token);
 
         // Recreate prayer alarms every Salah
         schedule.createPrayerAlarms();

@@ -9,30 +9,30 @@ interface LocationInfo {
   timezoneOffset: number;
 }
 
-const tzOptions = {
+const timeZoneOptions = {
   enableHighAccuracy: true,
   maximumAge: 0,
   timeout: 5000
 };
 
 export function setOrUpdateCurrent() {
-    navigator.geolocation.getCurrentPosition(success, error, tzOptions);
+    navigator.geolocation.getCurrentPosition(success, error, timeZoneOptions);
 }
 
 function success(pos: any) {
-  const crd = pos.coords;
+  const coordinates = pos.coords;
   let locationInfo: LocationInfo | undefined;
     fetch(
-      `${constants.tzDBAPIURL}/get-time-zone?key=${
-        constants.timeZoneDBAPIKey
-      }&by=position&lat=${crd.latitude}&lng=${crd.longitude}&format=json`
+      `${constants.TIMEZONE_DB_API_URL}/get-time-zone?key=${
+        constants.TIMEZONE_DB_API_KEY
+      }&by=position&lat=${coordinates.latitude}&lng=${coordinates.longitude}&format=json`
     )
       .then(response => {
         response.json().then(data => {
           locationInfo = {
             dayLightSaving: Number(data.dst),
-            latitude: crd.latitude,
-            longitude: crd.longitude,
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
             timezoneOffset: Number(data.abbreviation)
           };
           storage.put(

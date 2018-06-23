@@ -6,8 +6,8 @@ interface StatusObject {
 }
 
 export function setDND(numberOfMinutes: number, accessToken: string) {
-  const web = new WebClient(accessToken);
-  web.dnd
+  const slackWebClient = new WebClient(accessToken);
+  slackWebClient.dnd
     .setSnooze({ num_minutes: numberOfMinutes })
     .then(res => console.log(res))
     .catch(e => {
@@ -16,8 +16,8 @@ export function setDND(numberOfMinutes: number, accessToken: string) {
 }
 
 export function endDND(accessToken: string) {
-  const web = new WebClient(accessToken);
-  web.dnd
+  const slackWebClient = new WebClient(accessToken);
+  slackWebClient.dnd
     .endDnd()
     .then(res => console.log(res))
     .catch(e => {
@@ -26,8 +26,8 @@ export function endDND(accessToken: string) {
 }
 
 export function setUserStatus(profile: StatusObject, accessToken: string) {
-  const web = new WebClient(accessToken);
-  web.users.profile
+  const slackWebClient = new WebClient(accessToken);
+  slackWebClient.users.profile
     .set({
       profile: JSON.stringify({
         status_emoji: profile.statusEmoji,

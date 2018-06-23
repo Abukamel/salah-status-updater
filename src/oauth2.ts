@@ -7,17 +7,17 @@ window.onload = () => {
   chrome.identity.launchWebAuthFlow(
     {
       interactive: true,
-      url: `${constants.slackAuthorizeURL}?client_id=${
-        constants.slackClientID
-        }&scope=${constants.slackScope}&redirect_uri=${constants.herokuRedirectURI}`
+      url: `${constants.SLACK_AUTHORIZE_URL}?client_id=${
+        constants.SLACK_CLIENT_ID
+        }&scope=${constants.SLACK_SCOPE}&redirect_uri=${constants.HEROKU_REDIRECT_URL}`
     },
     (redirectURI: string) => {
       NProgress.done();
-      const parsedURL = new URL(redirectURI);
+      const parsedUrl = new URL(redirectURI);
       const slackCredentials = {
-        access_token: parsedURL.searchParams.get("access_token"),
-        team_id: parsedURL.searchParams.get("team_id"),
-        team_name: parsedURL.searchParams.get("team_name")
+        access_token: parsedUrl.searchParams.get("access_token"),
+        team_id: parsedUrl.searchParams.get("team_id"),
+        team_name: parsedUrl.searchParams.get("team_name")
       };
       storage.put({ key: "slackTeams", value: slackCredentials }, true);
       chrome.browserAction.setBadgeText({ text: "" });

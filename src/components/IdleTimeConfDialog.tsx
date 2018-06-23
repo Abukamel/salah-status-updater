@@ -24,21 +24,21 @@ export default class FormDialog extends React.Component<
   public constructor(props: any) {
     super(props);
     this.state = {
-      asr: storage.get("prayersIdleTime")
-        ? storage.get("prayersIdleTime").asr
-        : constants.prayersIdleTime.asr,
-      dhuhr: storage.get("prayersIdleTime")
-        ? storage.get("prayersIdleTime").dhuhr
-        : constants.prayersIdleTime.dhuhr,
-      fajr: storage.get("prayersIdleTime")
-        ? storage.get("prayersIdleTime").fajr
-        : constants.prayersIdleTime.fajr,
-      isha: storage.get("prayersIdleTime")
-        ? storage.get("prayersIdleTime").isha
-        : constants.prayersIdleTime.isha,
-      maghrib: storage.get("prayersIdleTime")
-        ? storage.get("prayersIdleTime").maghrib
-        : constants.prayersIdleTime.maghrib,
+      asr: storage.get("PRAYERS_IDLE_TIME")
+        ? storage.get("PRAYERS_IDLE_TIME").asr
+        : constants.PRAYERS_IDLE_TIME.asr,
+      dhuhr: storage.get("PRAYERS_IDLE_TIME")
+        ? storage.get("PRAYERS_IDLE_TIME").dhuhr
+        : constants.PRAYERS_IDLE_TIME.dhuhr,
+      fajr: storage.get("PRAYERS_IDLE_TIME")
+        ? storage.get("PRAYERS_IDLE_TIME").fajr
+        : constants.PRAYERS_IDLE_TIME.fajr,
+      isha: storage.get("PRAYERS_IDLE_TIME")
+        ? storage.get("PRAYERS_IDLE_TIME").isha
+        : constants.PRAYERS_IDLE_TIME.isha,
+      maghrib: storage.get("PRAYERS_IDLE_TIME")
+        ? storage.get("PRAYERS_IDLE_TIME").maghrib
+        : constants.PRAYERS_IDLE_TIME.maghrib,
       open: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -69,7 +69,7 @@ export default class FormDialog extends React.Component<
     });
     storage.put(
       {
-        key: "prayersIdleTime",
+        key: "PRAYERS_IDLE_TIME",
         value: {
           asr:
             Number(this.state.asr) > 60
