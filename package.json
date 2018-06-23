@@ -1,6 +1,6 @@
 {
   "name": "salah-status-updater",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@slack/client": "^4.3.1",
