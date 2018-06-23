@@ -81,7 +81,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
         );
 
         // Set last Snooze settings if needed
-        if (lastDndSnoozeSettings.snooze_enabled) {
+        if (lastDndSnoozeSettings && "snooze_enabled" in lastDndSnoozeSettings) {
           slack.setSnooze(
             lastDndSnoozeSettings.snooze_remaining -
               storage.get("prayersIdleTime")[storage.get("lastSalahName")],
