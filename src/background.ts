@@ -89,7 +89,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
           {
             statusEmoji: ":mosque:",
             statusText: `Praying ${alarm.name} now, will be back at ${
-              moment(Date.now() + (constants.prayersIdleTime[alarm.name] * 60 * 1000)).format("HH:mm A")
+              moment(Date.now() + (constants.prayersIdleTime[alarm.name] * 60 * 1000)).format("hh:mm A")
             } in shaa Allah`
           },
           team.access_token
