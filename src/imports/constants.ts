@@ -1,6 +1,6 @@
 export const timeZoneDBAPIKey: string = "8CF211EJWHQ2";
 export const slackClientID: string = "382835922887.381571407876";
-export const slackScope: string = "dnd:write, users.profile:write, users.profile:read, read";
+export const slackScope: string = "dnd:write, users.profile:write, users.profile:read, dnd:read";
 export const slackAPIURL: string = "https://slack.com/api";
 export const slackAuthorizeURL: string = "https://slack.com/oauth/authorize";
 export const tzDBAPIURL: string = "http://api.timezonedb.com/v2";
