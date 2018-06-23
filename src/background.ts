@@ -74,8 +74,8 @@ chrome.alarms.onAlarm.addListener(alarm => {
         // Restore last user Status
         slack.setUserStatus(
           {
-            statusEmoji: lastProfileStatus.statu_emoji,
-            statusText: lastProfileStatus.status_text
+            statusEmoji: lastProfileStatus.profile.status_emoji,
+            statusText: lastProfileStatus.profile.status_text
           },
           team.access_token
         );
