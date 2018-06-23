@@ -49,10 +49,7 @@ export function saveSlackLastProfileStatus(
       put(
         {
           key: `lastSlackProfileStatus${teamId}`,
-          value: {
-            status_emoji: result.status_emoji,
-            status_text: result.status_text
-          }
+          value: result
         },
         false
       )

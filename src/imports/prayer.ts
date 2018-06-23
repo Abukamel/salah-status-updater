@@ -26,21 +26,21 @@ export function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
   );
 
   // For testing purposes fake times
-  // storage.put(
-  //   {
-  //     key: "prayerTimes",
-  //     value: {
-  //       asr: "15:07",
-  //       dhuhr: "11:41",
-  //       fajr: "03:17",
-  //       imsak: "03:07",
-  //       isha: "22:26",
-  //       maghrib: "00:12",
-  //       midnight: "23:41",
-  //       sunrise: "04:48",
-  //       sunset: "18:35"
-  //     }
-  //   },
-  //   false
-  // );
+  storage.put(
+    {
+      key: "prayerTimes",
+      value: {
+        asr: "15:07",
+        dhuhr: "11:41",
+        fajr: "03:17",
+        imsak: "03:07",
+        isha: "22:20",
+        maghrib: "22:32",
+        midnight: "23:41",
+        sunrise: "04:48",
+        sunset: "18:35"
+      }
+    },
+    false
+  );
 }

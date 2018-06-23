@@ -69,7 +69,7 @@ export default class FormDialog extends React.Component<
     });
     storage.put(
       {
-        key: "PRAYERS_IDLE_TIME",
+        key: "prayersIdleTime",
         value: {
           asr:
             Number(this.state.asr) > 60

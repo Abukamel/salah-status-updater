@@ -84,7 +84,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
         if (lastDndSnoozeSettings.snooze_enabled) {
           slack.setSnooze(
             lastDndSnoozeSettings.snooze_remaining -
-              constants.PRAYERS_IDLE_TIME[storage.get("lastSalahName")],
+              storage.get("prayersIdleTime")[storage.get("lastSalahName")],
             team.access_token
           );
         }
@@ -104,7 +104,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
         chrome.alarms.create(`remove_${alarm.name}_status`, {
           when: Number(
             alarm.scheduledTime +
-              constants.PRAYERS_IDLE_TIME[alarm.name] * 60 * 1000
+              storage.get("prayersIdleTime")[alarm.name] * 60 * 1000
           )
         });
 
@@ -126,7 +126,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
           {
             statusEmoji: ":mosque:",
             statusText: `Praying ${alarm.name} now, will be back at ${moment(
-              Date.now() + constants.PRAYERS_IDLE_TIME[alarm.name] * 60 * 1000
+              Date.now() + storage.get("prayersIdleTime")[alarm.name] * 60 * 1000
             ).format("hh:mm A")} in shaa Allah`
           },
           team.access_token
@@ -134,7 +134,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
 
         // Activate slack Do not disturb state
         slack.setSnooze(
-          constants.PRAYERS_IDLE_TIME[alarm.name],
+          storage.get("prayersIdleTime")[alarm.name],
           team.access_token
         );
 
