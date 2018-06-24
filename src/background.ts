@@ -84,7 +84,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
         if (lastSlackDndSnoozeSettings && "snooze_enabled" in lastSlackDndSnoozeSettings) {
           slack.setSnooze(
             lastSlackDndSnoozeSettings.snooze_remaining -
-              storage.get("prayersIdleTime")[storage.get("lastSalahName")],
+            (storage.get("prayersIdleTime")[storage.get("lastSalahName")] * 60),
             team.access_token
           );
         }
