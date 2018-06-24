@@ -4,7 +4,7 @@
   "name": "Salah Status Updater",
   "description":
     "Change Slack status to reflect praying time & set DND mode after Azan until prayer ends restoring back last status & settings",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "Ahmed Kamel <k.tricky@gmail.com>",
   "homepage_url": "https://github.com/Abukamel/salah-status-updater",
   "browser_action": {

@@ -5,6 +5,7 @@ export const SLACK_AUTHORIZE_URL: string = "https://slack.com/oauth/authorize";
 export const TIMEZONE_DB_API_URL: string = "http://api.timezonedb.com/v2";
 export const HEROKU_REDIRECT_URL: string =
   "https://slack-oauth-middleware.herokuapp.com/oauth2";
+export const SENTRY_URL: string = "https://94dacaa5e98b46d08bef8827d27bda29@sentry.io/1231758";
 export const TIME_FORMAT = "24h";
 export const PRAYERS_IDLE_TIME = {
   asr: 30,

@@ -1,6 +1,9 @@
+import * as Raven from "raven-js";
 import * as constants from "./constants";
-import * as prayer from "./prayer"
+import * as prayer from "./prayer";
 import * as storage from "./storage";
+
+Raven.config(constants.SENTRY_URL).install();
 
 interface LocationInfo {
   dayLightSaving: number;
@@ -16,40 +19,44 @@ const timeZoneOptions = {
 };
 
 export function setOrUpdateCurrent() {
-    navigator.geolocation.getCurrentPosition(success, error, timeZoneOptions);
+  navigator.geolocation.getCurrentPosition(success, error, timeZoneOptions);
 }
 
 function success(pos: any) {
   const coordinates = pos.coords;
   let locationInfo: LocationInfo | undefined;
-    fetch(
-      `${constants.TIMEZONE_DB_API_URL}/get-time-zone?key=${
-        constants.TIMEZONE_DB_API_KEY
-      }&by=position&lat=${coordinates.latitude}&lng=${coordinates.longitude}&format=json`
-    )
-      .then(response => {
-        response.json().then(data => {
-          locationInfo = {
-            dayLightSaving: Number(data.dst),
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            timezoneOffset: Number(data.abbreviation)
-          };
-          storage.put(
-            {
-              key: "currentLocation",
-              value: locationInfo
-            },
-            false
-          );
-          prayer.setOrUpdateTimes(storage.get("currentLocation"));
-        });
-      })
-      .catch(e => {
-        throw e;
+  fetch(
+    `${constants.TIMEZONE_DB_API_URL}/get-time-zone?key=${
+      constants.TIMEZONE_DB_API_KEY
+    }&by=position&lat=${coordinates.latitude}&lng=${
+      coordinates.longitude
+    }&format=json`
+  )
+    .then(response => {
+      response.json().then(data => {
+        locationInfo = {
+          dayLightSaving: Number(data.dst),
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          timezoneOffset: Number(data.abbreviation)
+        };
+        storage.put(
+          {
+            key: "currentLocation",
+            value: locationInfo
+          },
+          false
+        );
+        prayer.setOrUpdateTimes(storage.get("currentLocation"));
       });
+    })
+    .catch(e => {
+      Raven.captureException(e);
+      throw new Error(e.message);
+    });
 }
 
 function error(e: any) {
-  throw e;
+  Raven.captureException(e);
+  throw new Error(e.message);
 }

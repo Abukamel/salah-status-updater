@@ -1,11 +1,16 @@
 import { WebClient } from "@slack/client";
 import { isEqual, uniqWith } from "lodash";
+import * as Raven from "raven-js";
 import * as store from "store";
+import { SENTRY_URL } from "./constants";
+
+Raven.config(SENTRY_URL).install();
 
 interface StoreData {
   key: string;
   value: any;
 }
+
 
 export function put(data: StoreData, combine: boolean) {
   try {
@@ -20,7 +25,8 @@ export function put(data: StoreData, combine: boolean) {
       store.set(data.key, data.value);
     }
   } catch (e) {
-    throw new Error(e);
+    Raven.captureException(e);
+    throw new Error(e.message);
   }
 }
 
@@ -29,12 +35,16 @@ export function get(key: string) {
 }
 
 export function deleteSlackTeam(teamID: number) {
-  const slackTeams = get("slackTeams");
-  if (slackTeams) {
-    store.set(
-      "slackTeams",
-      slackTeams.filter((team: any) => team.team_id !== teamID)
-    );
+  try {
+    const slackTeams = get("slackTeams");
+    if (slackTeams) {
+      store.set(
+        "slackTeams",
+        slackTeams.filter((team: any) => team.team_id !== teamID)
+      );
+    }
+  } catch (e) {
+   Raven.captureException(e);
   }
 }
 
@@ -55,7 +65,8 @@ export function saveSlackLastProfileStatus(
       )
     )
     .catch(e => {
-      throw new Error(e);
+      Raven.captureException(e);
+      throw new Error(e.message);
     });
 }
 
@@ -76,6 +87,7 @@ export function saveSlackLastDndSnoozeSettings(
       )
     )
     .catch(e => {
-      throw new Error(e);
+      Raven.captureException(e);
+      throw new Error(e.message);
     });
 }

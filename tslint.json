@@ -3,7 +3,7 @@
   "import-sources-order": "any",
   "rules": {
     "interface-name": [true, "never-prefix"],
-    "no-console": false
+    "no-console": true
   },
   "linterOptions": {
     "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/imports/PrayTimes.js"]
