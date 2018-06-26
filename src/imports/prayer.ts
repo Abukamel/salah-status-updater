@@ -28,25 +28,6 @@ export function setOrUpdateTimes(locationTimezoneInfo: LocationTimezoneInfo) {
       },
       false
     );
-
-    // For testing purposes fake times
-    // storage.put(
-    //   {
-    //     key: "prayerTimes",
-    //     value: {
-    //       asr: "22:55",
-    //       dhuhr: "23:11",
-    //       fajr: "03:17",
-    //       imsak: "03:07",
-    //       isha: "22:38",
-    //       maghrib: "22:32",
-    //       midnight: "23:41",
-    //       sunrise: "04:48",
-    //       sunset: "18:35"
-    //     }
-    //   },
-    //   false
-    // );
   } catch (e) {
     Raven.captureException(e);
   }
