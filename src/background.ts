@@ -94,7 +94,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
                 ? ""
                 : lastSlackProfileStatus.profile.status_emoji,
               statusText: lastSlackProfileStatus.profile.status_text.includes(
-                "Prayer"
+                "Praying"
               )
                 ? ""
                 : lastSlackProfileStatus.profile.status_text
