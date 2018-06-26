@@ -1,16 +1,20 @@
-import { WebClient } from "@slack/client";
+import {RetryOptions, WebClient} from "@slack/client";
 import { isEqual, uniqWith } from "lodash";
 import * as Raven from "raven-js";
 import * as store from "store";
 import { SENTRY_URL } from "./constants";
 
 Raven.config(SENTRY_URL).install();
+const webClientRetryOptions: RetryOptions = {
+  minTimeout: 3 * 1000,
+  maxTimeout: 9 * 1000,
+  retries: 3
+};
 
 interface StoreData {
   key: string;
   value: any;
 }
-
 
 export function put(data: StoreData, combine: boolean) {
   try {
@@ -44,7 +48,7 @@ export function deleteSlackTeam(teamID: number) {
       );
     }
   } catch (e) {
-   Raven.captureException(e);
+    Raven.captureException(e);
   }
 }
 
@@ -52,7 +56,9 @@ export function saveSlackLastProfileStatus(
   accessToken: string,
   teamId: string
 ) {
-  const slackWebClient = new WebClient(accessToken);
+  const slackWebClient = new WebClient(accessToken, {
+    retryConfig: webClientRetryOptions
+  });
   return slackWebClient.users.profile
     .get()
     .then((result: any) =>
@@ -74,7 +80,9 @@ export function saveSlackLastDndSnoozeSettings(
   accessToken: string,
   teamId: string
 ) {
-  const slackWebClient = new WebClient(accessToken);
+  const slackWebClient = new WebClient(accessToken, {
+    retryConfig: webClientRetryOptions
+  });
   slackWebClient.dnd
     .info()
     .then((result: any) =>
