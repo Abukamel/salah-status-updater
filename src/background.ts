@@ -88,8 +88,16 @@ chrome.alarms.onAlarm.addListener(async alarm => {
           // Restore last user Status
           await slack.setUserStatus(
             {
-              statusEmoji: lastSlackProfileStatus.profile.status_emoji.includes("mosque") ? "" : lastSlackProfileStatus.profile.status_emoji,
-              statusText: lastSlackProfileStatus.profile.status_text.includes("Prayer") ? "" : lastSlackProfileStatus.profile.status_text
+              statusEmoji: lastSlackProfileStatus.profile.status_emoji.includes(
+                "mosque"
+              )
+                ? ""
+                : lastSlackProfileStatus.profile.status_emoji,
+              statusText: lastSlackProfileStatus.profile.status_text.includes(
+                "Prayer"
+              )
+                ? ""
+                : lastSlackProfileStatus.profile.status_text
             },
             team.access_token
           );
@@ -100,9 +108,9 @@ chrome.alarms.onAlarm.addListener(async alarm => {
             "snooze_enabled" in lastSlackDndSnoozeSettings
           ) {
             await slack.setSnooze(
-              lastSlackDndSnoozeSettings.snooze_remaining -
-              (storage.get("prayersIdleTime")[storage.get("lastSalahName")] + 5)
-                  ,
+              lastSlackDndSnoozeSettings.snooze_remaining / 60 -
+                (storage.get("prayersIdleTime")[storage.get("lastSalahName")] +
+                  5),
               team.access_token
             );
           }
