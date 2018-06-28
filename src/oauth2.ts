@@ -36,6 +36,6 @@ window.onload = () => {
     );
   } catch (e) {
     Raven.captureException(e);
-    throw new Error(e.message);
+    // throw new Error(e.message);
   }
 };

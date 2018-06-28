@@ -30,7 +30,7 @@ export function setSnooze(
   });
   slackWebClient.dnd.setSnooze({ num_minutes: numberOfMinutes }).catch(e => {
     Raven.captureException(e);
-    throw new Error(e.message);
+    // throw new Error(e.message);
   });
 }
 
@@ -45,7 +45,7 @@ export function endDnd(accessToken: string, limit: number = 0) {
   });
   slackWebClient.dnd.endDnd().catch(e => {
     Raven.captureException(e);
-    throw new Error(e.message);
+    // throw new Error(e.message);
   });
 }
 
@@ -56,10 +56,12 @@ export function setUserStatus(
 ) {
   const slackWebClient = new WebClient(accessToken, {
     retryConfig: webClientRetryOptions
-  }).on(
-    "rate_limited",
-    () => (limit < 5 ? setUserStatus(profile, accessToken, limit++) : null)
-  );
+  }).on("rate_limited", retryAfter => {
+    setTimeout(
+      () => (limit < 5 ? setUserStatus(profile, accessToken, limit++) : null),
+      (retryAfter + 1) * 1000
+    );
+  });
   slackWebClient.users.profile
     .set({
       profile: JSON.stringify({
@@ -69,6 +71,6 @@ export function setUserStatus(
     })
     .catch(e => {
       Raven.captureException(e);
-      throw new Error(e.message);
+      // throw new Error(e.message);
     });
 }

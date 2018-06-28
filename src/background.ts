@@ -138,8 +138,10 @@ chrome.alarms.onAlarm.addListener(async alarm => {
           });
 
           // Capture last profile status and emoji
-          await storage
-            .saveSlackLastProfileStatus(team.access_token, team.team_id)
+          await storage.saveSlackLastProfileStatus(
+            team.access_token,
+            team.team_id
+          );
 
           // Capture last Dnd and Snooze settings
           await storage.saveSlackLastDndSnoozeSettings(

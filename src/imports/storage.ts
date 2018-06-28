@@ -30,7 +30,7 @@ export function put(data: StoreData, combine: boolean) {
     }
   } catch (e) {
     Raven.captureException(e);
-    throw new Error(e.message);
+    // throw new Error(e.message);
   }
 }
 
@@ -81,7 +81,7 @@ limit: number = 0
     )
     .catch(e => {
       Raven.captureException(e);
-      throw new Error(e.message);
+      // throw new Error(e.message);
     });
 }
 
@@ -114,6 +114,6 @@ export function saveSlackLastDndSnoozeSettings(
     )
     .catch(e => {
       Raven.captureException(e);
-      throw new Error(e.message);
+      // throw new Error(e.message);
     });
 }
